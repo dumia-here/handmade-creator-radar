@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "radar-evidence.v0.1.schema.json",
+  "title": "Radar Evidence Item V0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["evidence_id", "platform", "source_url", "observed_at", "observation_window", "source_type", "signal", "statement_kind", "directness", "freshness", "confidence"],
+  "properties": {
+    "evidence_id": {"type": "string", "minLength": 1},
+    "platform": {"enum": ["xiaohongshu", "douyin", "bilibili", "weibo", "instagram", "tiktok", "youtube", "pinterest"]},
+    "candidate_id": {"type": ["string", "null"], "minLength": 1},
+    "creator_id": {"type": ["string", "null"], "minLength": 1},
+    "source_url": {"type": "string", "minLength": 1},
+    "observed_at": {"type": "string", "minLength": 1},
+    "observation_window": {"type": "string", "minLength": 1},
+    "source_type": {"type": "string", "minLength": 1},
+    "signal": {"enum": ["relevant_creator_density", "small_account_relative_growth", "stranger_engagement", "content_lifetime", "expression_fit", "maintenance_cost"]},
+    "value": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "baseline": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "statement_kind": {"enum": ["fact", "inference", "missing"]},
+    "directness": {"type": "number", "minimum": 0, "maximum": 1},
+    "freshness": {"type": "number", "minimum": 0, "maximum": 1},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "notes": {"type": "string"}
+  },
+  "anyOf": [
+    {"required": ["candidate_id"], "properties": {"candidate_id": {"type": "string", "minLength": 1}}},
+    {"required": ["creator_id"], "properties": {"creator_id": {"type": "string", "minLength": 1}}}
+  ],
+  "allOf": [
+    {
+      "if": {"properties": {"statement_kind": {"const": "missing"}}, "required": ["statement_kind"]},
+      "then": {"properties": {"value": {"type": "null"}}},
+      "else": {"required": ["value"], "properties": {"value": {"type": "number"}}}
+    }
+  ]
+}

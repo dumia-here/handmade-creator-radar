@@ -1,0 +1,66 @@
+{
+  "schema_version": "radar.evidence-replay.v0.1",
+  "cases": [
+    {
+      "case_id": "sufficient_multi_creator_multi_window",
+      "description": "三位创作者、两个窗口，六项信号齐全",
+      "evidence": [
+        {"evidence_id":"s1","platform":"xiaohongshu","candidate_id":"x1","creator_id":"c1","source_url":"https://example.invalid/x1","observed_at":"2026-07-01T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"relevant_creator_density","value":80,"baseline":50,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"stable replay"},
+        {"evidence_id":"s2","platform":"xiaohongshu","candidate_id":"x2","creator_id":"c2","source_url":"https://example.invalid/x2","observed_at":"2026-07-02T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"small_account_relative_growth","value":76,"baseline":45,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"stable replay"},
+        {"evidence_id":"s3","platform":"xiaohongshu","candidate_id":"x3","creator_id":"c3","source_url":"https://example.invalid/x3","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"stranger_engagement","value":74,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"stable replay"},
+        {"evidence_id":"s4","platform":"xiaohongshu","candidate_id":"x4","creator_id":"c1","source_url":"https://example.invalid/x4","observed_at":"2026-07-09T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"content_lifetime","value":72,"statement_kind":"inference","directness":0.8,"freshness":0.9,"confidence":0.85,"notes":"window comparison"},
+        {"evidence_id":"s5","platform":"xiaohongshu","candidate_id":"x5","creator_id":"c2","source_url":"https://example.invalid/x5","observed_at":"2026-07-09T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"expression_fit","value":78,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"stable replay"},
+        {"evidence_id":"s6","platform":"xiaohongshu","candidate_id":"x6","creator_id":"c3","source_url":"https://example.invalid/x6","observed_at":"2026-07-10T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"maintenance_cost","value":22,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"low cost"}
+      ]
+    },
+    {
+      "case_id": "single_viral_post",
+      "description": "单条爆款不得产生平台层级结论",
+      "evidence": [
+        {"evidence_id":"v1","platform":"instagram","candidate_id":"viral","creator_id":"one","source_url":"https://example.invalid/viral","observed_at":"2026-07-10T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"relevant_creator_density","value":99,"statement_kind":"fact","directness":1,"freshness":1,"confidence":0.95,"notes":"single viral post"},
+        {"evidence_id":"v2","platform":"instagram","candidate_id":"viral","creator_id":"one","source_url":"https://example.invalid/viral","observed_at":"2026-07-10T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"small_account_relative_growth","value":99,"statement_kind":"fact","directness":1,"freshness":1,"confidence":0.95,"notes":"single viral post"},
+        {"evidence_id":"v3","platform":"instagram","candidate_id":"viral","creator_id":"one","source_url":"https://example.invalid/viral","observed_at":"2026-07-10T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"stranger_engagement","value":99,"statement_kind":"fact","directness":1,"freshness":1,"confidence":0.95,"notes":"single viral post"},
+        {"evidence_id":"v4","platform":"instagram","candidate_id":"viral","creator_id":"one","source_url":"https://example.invalid/viral","observed_at":"2026-07-10T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"content_lifetime","value":99,"statement_kind":"inference","directness":0.7,"freshness":1,"confidence":0.7,"notes":"single viral post"},
+        {"evidence_id":"v5","platform":"instagram","candidate_id":"viral","creator_id":"one","source_url":"https://example.invalid/viral","observed_at":"2026-07-10T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"expression_fit","value":99,"statement_kind":"fact","directness":0.9,"freshness":1,"confidence":0.9,"notes":"single viral post"},
+        {"evidence_id":"v6","platform":"instagram","candidate_id":"viral","creator_id":"one","source_url":"https://example.invalid/viral","observed_at":"2026-07-10T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"maintenance_cost","value":10,"statement_kind":"inference","directness":0.6,"freshness":1,"confidence":0.6,"notes":"single observation"}
+      ]
+    },
+    {
+      "case_id": "conflicting_evidence",
+      "description": "正反证据冲突必须降置信度并显式保留",
+      "evidence": [
+        {"evidence_id":"c1","platform":"youtube","candidate_id":"y1","creator_id":"yc1","source_url":"https://example.invalid/y1","observed_at":"2026-07-01T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"relevant_creator_density","value":82,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"positive"},
+        {"evidence_id":"c2","platform":"youtube","candidate_id":"y2","creator_id":"yc2","source_url":"https://example.invalid/y2","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"relevant_creator_density","value":20,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"negative"},
+        {"evidence_id":"c3","platform":"youtube","candidate_id":"y3","creator_id":"yc3","source_url":"https://example.invalid/y3","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"small_account_relative_growth","value":70,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"positive"},
+        {"evidence_id":"c4","platform":"youtube","candidate_id":"y4","creator_id":"yc1","source_url":"https://example.invalid/y4","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"stranger_engagement","value":68,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"stable"},
+        {"evidence_id":"c5","platform":"youtube","candidate_id":"y5","creator_id":"yc2","source_url":"https://example.invalid/y5","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"content_lifetime","value":75,"statement_kind":"inference","directness":0.8,"freshness":0.9,"confidence":0.8,"notes":"stable"},
+        {"evidence_id":"c6","platform":"youtube","candidate_id":"y6","creator_id":"yc3","source_url":"https://example.invalid/y6","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"expression_fit","value":72,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"stable"},
+        {"evidence_id":"c7","platform":"youtube","candidate_id":"y7","creator_id":"yc1","source_url":"https://example.invalid/y7","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"maintenance_cost","value":35,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"moderate"}
+      ]
+    },
+    {
+      "case_id": "mostly_missing",
+      "description": "缺失值不按零计分",
+      "evidence": [
+        {"evidence_id":"m1","platform":"pinterest","candidate_id":"p1","creator_id":"pc1","source_url":"https://example.invalid/p1","observed_at":"2026-07-01T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"relevant_creator_density","value":null,"statement_kind":"missing","directness":0,"freshness":0.9,"confidence":0,"notes":"unavailable"},
+        {"evidence_id":"m2","platform":"pinterest","candidate_id":"p2","creator_id":"pc2","source_url":"https://example.invalid/p2","observed_at":"2026-07-01T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"small_account_relative_growth","value":null,"statement_kind":"missing","directness":0,"freshness":0.9,"confidence":0,"notes":"unavailable"},
+        {"evidence_id":"m3","platform":"pinterest","candidate_id":"p3","creator_id":"pc3","source_url":"https://example.invalid/p3","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"stranger_engagement","value":null,"statement_kind":"missing","directness":0,"freshness":0.9,"confidence":0,"notes":"unavailable"},
+        {"evidence_id":"m4","platform":"pinterest","candidate_id":"p4","creator_id":"pc4","source_url":"https://example.invalid/p4","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"content_lifetime","value":60,"statement_kind":"inference","directness":0.5,"freshness":0.8,"confidence":0.5,"notes":"partial"},
+        {"evidence_id":"m5","platform":"pinterest","candidate_id":"p5","creator_id":"pc5","source_url":"https://example.invalid/p5","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"expression_fit","value":null,"statement_kind":"missing","directness":0,"freshness":0.9,"confidence":0,"notes":"unavailable"},
+        {"evidence_id":"m6","platform":"pinterest","candidate_id":"p5","creator_id":"pc5","source_url":"https://example.invalid/p5","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"maintenance_cost","value":null,"statement_kind":"missing","directness":0,"freshness":0.9,"confidence":0,"notes":"unavailable"}
+      ]
+    },
+    {
+      "case_id": "high_maintenance_cost",
+      "description": "其余信号强但维护成本高",
+      "evidence": [
+        {"evidence_id":"h1","platform":"tiktok","candidate_id":"t1","creator_id":"tc1","source_url":"https://example.invalid/t1","observed_at":"2026-07-01T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"relevant_creator_density","value":82,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"strong"},
+        {"evidence_id":"h2","platform":"tiktok","candidate_id":"t2","creator_id":"tc2","source_url":"https://example.invalid/t2","observed_at":"2026-07-01T00:00:00Z","observation_window":"w1","source_type":"replay","signal":"small_account_relative_growth","value":84,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"strong"},
+        {"evidence_id":"h3","platform":"tiktok","candidate_id":"t3","creator_id":"tc3","source_url":"https://example.invalid/t3","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"stranger_engagement","value":80,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"strong"},
+        {"evidence_id":"h4","platform":"tiktok","candidate_id":"t4","creator_id":"tc1","source_url":"https://example.invalid/t4","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"content_lifetime","value":76,"statement_kind":"inference","directness":0.8,"freshness":0.9,"confidence":0.8,"notes":"strong"},
+        {"evidence_id":"h5","platform":"tiktok","candidate_id":"t5","creator_id":"tc2","source_url":"https://example.invalid/t5","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"expression_fit","value":83,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"strong"},
+        {"evidence_id":"h6","platform":"tiktok","candidate_id":"t6","creator_id":"tc3","source_url":"https://example.invalid/t6","observed_at":"2026-07-08T00:00:00Z","observation_window":"w2","source_type":"replay","signal":"maintenance_cost","value":95,"statement_kind":"fact","directness":0.9,"freshness":0.9,"confidence":0.9,"notes":"high publishing burden"}
+      ]
+    }
+  ]
+}

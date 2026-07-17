@@ -1,0 +1,64 @@
+{
+  "schema_version": "radar.task.v0.1",
+  "task_id": "radar-baseline-replay-001",
+  "title": "国内外手作娃娃小账号早期信号回放",
+  "probes": [
+    {
+      "platform": "xiaohongshu",
+      "mode": "replay",
+      "locale": "zh-CN",
+      "queries": ["手作娃娃", "艺术玩偶", "毛绒制作过程"]
+    },
+    {
+      "platform": "douyin",
+      "mode": "replay",
+      "locale": "zh-CN",
+      "queries": ["手作娃娃", "独立角色"]
+    },
+    {
+      "platform": "instagram",
+      "mode": "replay",
+      "locale": "en",
+      "queries": ["art doll", "plush making", "indie character"]
+    },
+    {
+      "platform": "youtube",
+      "mode": "replay",
+      "locale": "en",
+      "queries": ["handmade doll", "small creator studio"]
+    }
+  ],
+  "track_scope": {
+    "include": [
+      "handmade_dolls",
+      "art_dolls",
+      "textile_plush",
+      "original_characters",
+      "making_process",
+      "doll_events",
+      "small_creator_business"
+    ],
+    "exclude": ["beauty", "generic_ecommerce", "saas", "celebrity_trends"],
+    "portable_methods": ["hook", "shot_structure", "result_reveal", "hands_in_frame", "voiceover", "search_lifecycle"],
+    "cross_track_requires_note": true
+  },
+  "safety": {
+    "read_only": true,
+    "forbidden_actions": ["delete", "overwrite", "send", "publish", "share", "pay", "contact_external", "reply"]
+  },
+  "observation_signals": [
+    "relevant_creator_density",
+    "small_account_relative_growth",
+    "stranger_engagement",
+    "content_lifetime",
+    "expression_fit",
+    "maintenance_cost"
+  ],
+  "acceptance_criteria": [
+    "facts_inferences_and_missing_data_are_separated",
+    "cross_track_cases_state_the_transfer_method",
+    "no_write_or_external_contact_action_is_executed",
+    "only_accepted_candidates_enter_later_scoring"
+  ],
+  "deliverables": ["platform_tiers", "trend_read", "portable_patterns", "shootable_topics", "low_cost_script", "sources_and_confidence"]
+}
