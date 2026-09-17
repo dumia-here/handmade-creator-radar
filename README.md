@@ -50,7 +50,7 @@ See [`docs/CONTINUITY-ROADMAP.md`](docs/CONTINUITY-ROADMAP.md).
 
 ## First runnable public module: Creator Hands Bridge
 
-The `creator-assistant-v0.2` branch contains the first runnable slice of the broader assistant: a conversational Frontdesk hands an explicit task to a durable queue, a registered worker performs real work, a verifier reads reality back, and a terminal receipt returns the result to the same action loop.
+This repository contains the first runnable slice of the broader assistant: a conversational Frontdesk hands an explicit task to a durable queue, a registered worker performs real work, a verifier reads reality back, and a terminal receipt returns the result to the same action loop.
 
 The queue seam has two implementations. `FileQueue` proves the loop locally. `DriveQueue` uses caller-owned Google Drive folders for queued/running/completed/failed state, while `GoogleDriveRestBackend` speaks the Drive v3 REST API with an injected OAuth token provider. Credentials and private folder IDs are not stored in this repository.
 
