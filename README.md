@@ -16,14 +16,16 @@ V0.1 remains intact as the project’s origin. Personal memory, private creator 
 
 ## First extracted module: Creator Hands Bridge
 
-The `creator-assistant-v0.2` branch now contains the first small runnable slice of the broader assistant: a conversational Frontdesk can hand an explicit task to a durable queue, a registered worker performs real filesystem work, a verifier reads the artifact back and records SHA-256 evidence, and a terminal receipt returns the result to the same action loop.
+The `creator-assistant-v0.2` branch contains the first runnable slice of the broader assistant: a conversational Frontdesk hands an explicit task to a durable queue, a registered worker performs real work, a verifier reads reality back, and a terminal receipt returns the result to the same action loop.
 
-This is intentionally a minimal public seam, not a copy of the private production bridge. The worker and local queue are replaceable adapters. Future public extractions may add Google Drive transport, Codex workers, and read-only MCP verification when those pieces can be separated safely.
+The queue seam now has two implementations. `FileQueue` proves the loop locally. `DriveQueue` uses caller-owned Google Drive folders for queued/running/completed/failed state, while `GoogleDriveRestBackend` speaks the Drive v3 REST API with an injected OAuth token provider. Credentials and private folder IDs are not stored in this repository.
+
+This remains a bounded public extraction, not a copy of the private production bridge. Live OAuth smoke, distributed claim locking, production-grade containment, and complete execution provenance are not claimed here. The next useful extractions are a Codex worker adapter and read-only MCP verification.
 
 See [`docs/CREATOR-HANDS.md`](docs/CREATOR-HANDS.md). The focused tests run with:
 
 ```bash
-PYTHONPATH=src python3 -m unittest tests.test_creator_hands
+PYTHONPATH=src python3 -m unittest tests.test_creator_hands tests.test_creator_hands_drive
 ```
 
 ## What this submission proves
@@ -67,7 +69,7 @@ docs/      architecture, submission materials, and disclosure boundaries
 - The first observation window is insufficient for a long-term platform conclusion.
 - No login, posting, upload, payment, private API, or account automation is included.
 - This repository does not publish the private orchestration system that inspired the Creator Hands extraction.
-- Creator Hands v0.1 is a minimal public action-loop slice; it does not claim production-grade containment or execution provenance is solved.
+- Creator Hands v0.1 does not claim production-grade containment, distributed queue ownership, live OAuth validation, or complete execution provenance is solved.
 
 ## License and dependencies
 
