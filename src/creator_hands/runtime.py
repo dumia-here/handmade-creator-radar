@@ -4,6 +4,7 @@ import hashlib
 from pathlib import Path, PurePosixPath
 from typing import Dict, Iterable, List, Protocol
 
+from .handoff import build_frontdesk_handoff
 from .models import HandsTask, Receipt, Verification
 from .queue import FileQueue
 
@@ -99,6 +100,33 @@ class CreatorHandsBridge:
                     raise ValueError(f"duplicate worker action: {action}")
                 self.workers[action] = worker
 
+    def _receipt(
+        self,
+        task: HandsTask,
+        *,
+        status: str,
+        worker: str,
+        artifacts: List[str],
+        verification: Verification,
+        message: str,
+    ) -> Receipt:
+        return Receipt(
+            task_id=task.task_id,
+            status=status,
+            worker=worker,
+            artifacts=list(artifacts),
+            verification=verification,
+            message=message,
+            frontdesk_handoff=build_frontdesk_handoff(
+                task,
+                status=status,
+                worker=worker,
+                artifacts=list(artifacts),
+                verification=verification,
+                message=message,
+            ),
+        )
+
     def run_once(self) -> Receipt | None:
         claimed = self.queue.claim_next()
         if claimed is None:
@@ -106,12 +134,13 @@ class CreatorHandsBridge:
         task, running_path = claimed
         worker = self.workers.get(task.action)
         if worker is None:
-            receipt = Receipt(
-                task_id=task.task_id,
+            verification = Verification(False, self.verifier.name, {"reason": "no registered worker"})
+            receipt = self._receipt(
+                task,
                 status="failed",
                 worker="none",
                 artifacts=[],
-                verification=Verification(False, self.verifier.name, {"reason": "no registered worker"}),
+                verification=verification,
                 message=f"No worker registered for action {task.action!r}",
             )
             self.queue.finish(running_path, receipt)
@@ -128,8 +157,8 @@ class CreatorHandsBridge:
             status = "failed"
             message = "Execution failed"
 
-        receipt = Receipt(
-            task_id=task.task_id,
+        receipt = self._receipt(
+            task,
             status=status,
             worker=worker.name,
             artifacts=artifacts,
