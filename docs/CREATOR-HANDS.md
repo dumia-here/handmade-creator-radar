@@ -25,7 +25,7 @@ conversation / Frontdesk
  verifier / readback
         |
         v
- terminal receipt
+ terminal receipt + Frontdesk handoff
         |
         v
  conversation / Frontdesk
@@ -45,6 +45,7 @@ The initial public implementation intentionally stays small:
 - `CodexCliWorker` can run an explicit `codex exec` task inside that workspace without giving the task card control over executable, argv, model, sandbox, environment, or timeout.
 - `ReadbackVerifier`, `ExpectedArtifactsVerifier`, and `ReadOnlyMcpVerifier` independently re-read real output files and record SHA-256 evidence through different verification seams.
 - `CreatorHandsBridge.run_once()` closes one complete task -> work -> verification -> receipt loop independent of whether the queue is local disk or Drive-backed.
+- Every terminal receipt now carries a versioned `frontdesk_handoff` with the task identity, agreed request and acceptance criteria, terminal outcome, verification evidence, and two bounded state flags: whether the Frontdesk may claim completion and whether review is still required.
 
 The workers are deliberately replaceable. The interesting part is the seam: Codex, a local-safe worker, an MCP verifier, an image pipeline, a publishing adapter, or an embodied device adapter can plug into the same loop without turning the worker into the main assistant.
 
@@ -82,6 +83,18 @@ A maintainer-local live smoke was run on 2026-09-17 against an existing read-onl
 
 **Honest limit:** this first public MCP slice proves a bounded read-only verification transport, not a universal MCP sandbox. The caller still owns the server implementation and launch policy, and production-grade containment / provenance claims remain outside this release.
 
+## Frontdesk receipt handoff boundary
+
+A terminal machine receipt is not enough for a persistent conversational assistant. `frontdesk_handoff` turns the terminal state into a small, versioned object the conversation layer can consume without re-reading private worker state.
+
+Schema v1 carries only durable context needed for continuation: `task_id`, `project_id`, `action`, the agreed request, acceptance criteria, terminal status, worker name, artifact paths, verifier evidence, and two state flags. `may_claim_complete` is true only when the bridge reached `completed` and verification is `ok`; otherwise `requires_frontdesk_review` is true.
+
+The handoff deliberately does **not** copy `task.payload`. Arbitrary payload values may contain runtime-only details, private paths, or application-specific material. Runtime credentials, worker configuration, model settings, server argv, and private orchestration state remain outside the conversational receipt unless a higher layer explicitly chooses to expose them.
+
+A maintainer-local live smoke was run on 2026-09-17 using a real local worker plus the real read-only MCP verifier. The artifact was written, verified through MCP, and returned a terminal handoff with `may_claim_complete: true`; a synthetic private payload marker was confirmed absent from the handoff.
+
+This object is evidence for the Frontdesk, not a replacement for the Frontdesk. It does not generate user-facing prose, choose the next task, or make policy decisions. The conversation layer still decides what the result means and what should happen next.
+
 ## What this is not
 
 This public slice does **not** claim to be the private production system that inspired it. It does not publish private memory, credentials, creator data, personal paths, private registries, device keys, or private orchestration configuration.
@@ -92,9 +105,9 @@ It also does not claim that production-grade containment or execution provenance
 
 Planned public extractions, only when they can be separated safely:
 
-1. richer receipt/state handoff back to the conversational Frontdesk,
-2. stronger queue ownership / concurrency semantics if a real multi-consumer use case requires them,
-3. additional verifier transports driven by real inspection needs,
-4. additional worker adapters driven by real creator workflows rather than speculative integrations.
+1. stronger queue ownership / concurrency semantics if a real multi-consumer use case requires them,
+2. additional verifier transports driven by real inspection needs,
+3. additional worker adapters driven by real creator workflows rather than speculative integrations,
+4. higher-level Frontdesk continuation examples that stay synthetic and do not publish private memory or orchestration state.
 
 The architectural rule stays the same: the assistant decides, the hand executes, reality is checked, and the result returns to the same assistant.
