@@ -48,8 +48,10 @@ class Receipt:
     artifacts: List[str]
     verification: Verification
     message: str
+    frontdesk_handoff: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         data = asdict(self)
         data["verification"] = self.verification.to_dict()
+        data["frontdesk_handoff"] = dict(self.frontdesk_handoff)
         return data
