@@ -1,5 +1,13 @@
 """Creator Hands Bridge: a tiny auditable action loop for conversational assistants."""
 
+from .drive_queue import (
+    DriveApiError,
+    DriveClaim,
+    DriveFile,
+    DriveFolders,
+    DriveQueue,
+    GoogleDriveRestBackend,
+)
 from .frontdesk import build_task
 from .models import HandsTask, Receipt, Verification
 from .queue import FileQueue
@@ -11,6 +19,12 @@ __all__ = [
     "Receipt",
     "Verification",
     "FileQueue",
+    "DriveApiError",
+    "DriveClaim",
+    "DriveFile",
+    "DriveFolders",
+    "DriveQueue",
+    "GoogleDriveRestBackend",
     "CreatorHandsBridge",
     "LocalTextWorker",
     "ReadbackVerifier",
