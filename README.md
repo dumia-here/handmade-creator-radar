@@ -14,6 +14,18 @@ The public direction is to gradually extract reusable, privacy-safe parts of tha
 
 V0.1 remains intact as the project’s origin. Personal memory, private creator data, credentials, and the private orchestration system are not part of this repository. New public modules will only be added when they can stand alone with tests, clear boundaries, and no dependency on private data.
 
+## First extracted module: Creator Hands Bridge
+
+The `creator-assistant-v0.2` branch now contains the first small runnable slice of the broader assistant: a conversational Frontdesk can hand an explicit task to a durable queue, a registered worker performs real filesystem work, a verifier reads the artifact back and records SHA-256 evidence, and a terminal receipt returns the result to the same action loop.
+
+This is intentionally a minimal public seam, not a copy of the private production bridge. The worker and local queue are replaceable adapters. Future public extractions may add Google Drive transport, Codex workers, and read-only MCP verification when those pieces can be separated safely.
+
+See [`docs/CREATOR-HANDS.md`](docs/CREATOR-HANDS.md). The focused tests run with:
+
+```bash
+PYTHONPATH=src python3 -m unittest tests.test_creator_hands
+```
+
 ## What this submission proves
 
 - A strict track filter accepts a candidate only when a making term and a doll/object term appear together.
@@ -41,11 +53,11 @@ The default command creates only temporary demo state, prints a path-free JSON s
 ## Repository layout
 
 ```text
-src/       radar implementation
+src/       radar implementation + Creator Hands action-loop slice
 tests/     offline regression and safety tests
 samples/   synthetic and golden replay data
 schemas/   versioned task, evidence, and score schemas
-docs/      submission materials and disclosure boundaries
+docs/      architecture, submission materials, and disclosure boundaries
 ```
 
 ## Honest limits
@@ -54,7 +66,8 @@ docs/      submission materials and disclosure boundaries
 - The bundled demo is replay data, never live evidence.
 - The first observation window is insufficient for a long-term platform conclusion.
 - No login, posting, upload, payment, private API, or account automation is included.
-- This package contains the radar module only; it does not contain the private orchestration system that originally invoked it.
+- This repository does not publish the private orchestration system that inspired the Creator Hands extraction.
+- Creator Hands v0.1 is a minimal public action-loop slice; it does not claim production-grade containment or execution provenance is solved.
 
 ## License and dependencies
 
