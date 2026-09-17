@@ -20,14 +20,16 @@ The `creator-assistant-v0.2` branch contains the first runnable slice of the bro
 
 The queue seam has two implementations. `FileQueue` proves the loop locally. `DriveQueue` uses caller-owned Google Drive folders for queued/running/completed/failed state, while `GoogleDriveRestBackend` speaks the Drive v3 REST API with an injected OAuth token provider. Credentials and private folder IDs are not stored in this repository.
 
-The worker seam now also includes `CodexCliWorker`. It runs explicit `codex exec` work inside the caller-owned workspace while runtime authority stays outside the task card: executable, argv, model, reasoning, sandbox, environment, and timeout cannot be overridden by the dispatched payload. Expected artifacts must exist after Codex exits, then `ExpectedArtifactsVerifier` independently re-reads and hashes them. A maintainer-local live smoke using existing ChatGPT-managed Codex authentication successfully created and verified a requested artifact.
+The worker seam includes `CodexCliWorker`. It runs explicit `codex exec` work inside the caller-owned workspace while runtime authority stays outside the task card: executable, argv, model, reasoning, sandbox, environment, and timeout cannot be overridden by the dispatched payload. Expected artifacts must exist after Codex exits, then `ExpectedArtifactsVerifier` independently re-reads and hashes them. A maintainer-local live smoke using existing ChatGPT-managed Codex authentication successfully created and verified a requested artifact.
 
-This remains a bounded public extraction, not a copy of the private production bridge. Live Drive OAuth smoke, distributed claim locking, production-grade containment, and complete execution provenance are not claimed here. The next useful extraction is generic read-only MCP verification.
+The verifier seam now also includes `ReadOnlyMcpVerifier`. It launches a caller-owned MCP server over stdio JSON-RPC and only calls `stat_path`, `sha256_file`, and `read_text_file`. A maintainer-local live smoke completed the real MCP handshake and tool calls, re-read a workspace artifact, matched its SHA-256 digest, and observed a clean child exit.
+
+This remains a bounded public extraction, not a copy of the private production bridge. Live Drive OAuth smoke, distributed claim locking, production-grade containment, and complete execution provenance are not claimed here. The next useful extraction is richer receipt/state handoff back to the conversational Frontdesk.
 
 See [`docs/CREATOR-HANDS.md`](docs/CREATOR-HANDS.md). The focused tests run with:
 
 ```bash
-PYTHONPATH=src python3 -m unittest tests.test_creator_hands tests.test_creator_hands_drive tests.test_creator_hands_codex
+PYTHONPATH=src python3 -m unittest tests.test_creator_hands tests.test_creator_hands_drive tests.test_creator_hands_codex tests.test_creator_hands_mcp
 ```
 
 ## What this submission proves
@@ -71,7 +73,7 @@ docs/      architecture, submission materials, and disclosure boundaries
 - The first observation window is insufficient for a long-term platform conclusion.
 - No login, posting, upload, payment, private API, or account automation is included.
 - This repository does not publish the private orchestration system that inspired the Creator Hands extraction.
-- Creator Hands v0.1 does not claim production-grade containment, distributed queue ownership, live Drive OAuth validation, or complete execution provenance is solved.
+- Creator Hands v0.1 does not claim production-grade containment, distributed queue ownership, live Drive OAuth validation, universal MCP sandboxing, or complete execution provenance is solved.
 
 ## License and dependencies
 
