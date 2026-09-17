@@ -4,6 +4,16 @@ Handmade Creator Radar turns a natural-language research brief into an auditable
 
 手作创作者雷达把自然语言调研任务转成可审计、重安全的跨平台公开证据比较；当前 V0.1 支持 Bilibili 与 YouTube。
 
+## Project direction: from Radar to a Creator Assistant
+
+This repository began as Handmade Creator Radar, a bounded research module built from a real independent handmade creator workflow.
+
+Since V0.1, the private system around it has evolved beyond external research into task dispatch and handoff, continuity and memory, embodied-assistant interfaces, and bounded autonomous actions.
+
+The public direction is to gradually extract reusable, privacy-safe parts of that work into an open modular digital assistant for independent handmade creators: research, planning, publishing, exhibition support, and optional embodied interfaces.
+
+V0.1 remains intact as the project’s origin. Personal memory, private creator data, credentials, and the private orchestration system are not part of this repository. New public modules will only be added when they can stand alone with tests, clear boundaries, and no dependency on private data.
+
 ## What this submission proves
 
 - A strict track filter accepts a candidate only when a making term and a doll/object term appear together.
