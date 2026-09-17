@@ -43,7 +43,7 @@ The initial public implementation intentionally stays small:
 - `GoogleDriveRestBackend` implements that queue surface against Google Drive v3 with a caller-supplied OAuth access-token provider. Tokens, refresh credentials, folder IDs, and private paths are never stored in task cards or source defaults.
 - `LocalTextWorker` performs one real filesystem action inside a bounded workspace.
 - `CodexCliWorker` can run an explicit `codex exec` task inside that workspace without giving the task card control over executable, argv, model, sandbox, environment, or timeout.
-- `ReadbackVerifier` and `ExpectedArtifactsVerifier` re-read real output files and record SHA-256 evidence.
+- `ReadbackVerifier`, `ExpectedArtifactsVerifier`, and `ReadOnlyMcpVerifier` independently re-read real output files and record SHA-256 evidence through different verification seams.
 - `CreatorHandsBridge.run_once()` closes one complete task -> work -> verification -> receipt loop independent of whether the queue is local disk or Drive-backed.
 
 The workers are deliberately replaceable. The interesting part is the seam: Codex, a local-safe worker, an MCP verifier, an image pipeline, a publishing adapter, or an embodied device adapter can plug into the same loop without turning the worker into the main assistant.
@@ -70,6 +70,18 @@ Authentication is not bundled. The caller supplies an already-authenticated Code
 
 A maintainer-local live smoke was run on 2026-09-17 against an installed Codex CLI using existing ChatGPT-managed authentication. Codex created the requested workspace artifact, and the independent artifact verifier returned `ok: true`. This is a live adapter smoke, not a claim that every Codex version, model, CI environment, or production security boundary is covered.
 
+## Read-only MCP verifier boundary
+
+`ReadOnlyMcpVerifier` launches a caller-owned MCP server as a separate stdio JSON-RPC child and gives it one explicit workspace root label. The task card never supplies server executable, argv, environment, protocol settings, or tool permissions.
+
+The verifier recognizes exactly three read-only operations: `stat_path`, `sha256_file`, and `read_text_file`. It compares the MCP-reported size and SHA-256 digest with the artifact bytes already bound to the verification request, then re-reads the full text through MCP and hashes that content again before returning `ok: true`.
+
+The public adapter also checks protocol version, JSON-RPC request/response ids, required tool presence, bounded message size, read progress, exact EOF behavior, safe relative artifact paths, clean child-process exit, and non-symlink regular files. It does not call write, shell, network, delete, or arbitrary MCP tools.
+
+A maintainer-local live smoke was run on 2026-09-17 against an existing read-only MCP server. The verifier completed a real stdio initialization / tools-list / tool-call exchange, verified one workspace artifact through `stat_path`, `sha256_file`, and `read_text_file`, matched the digest, and observed a clean child exit. No private server path, project registry, credentials, or owner data is part of this repository.
+
+**Honest limit:** this first public MCP slice proves a bounded read-only verification transport, not a universal MCP sandbox. The caller still owns the server implementation and launch policy, and production-grade containment / provenance claims remain outside this release.
+
 ## What this is not
 
 This public slice does **not** claim to be the private production system that inspired it. It does not publish private memory, credentials, creator data, personal paths, private registries, device keys, or private orchestration configuration.
@@ -80,9 +92,9 @@ It also does not claim that production-grade containment or execution provenance
 
 Planned public extractions, only when they can be separated safely:
 
-1. a generic read-only MCP verifier adapter,
-2. richer receipt/state handoff back to the conversational Frontdesk,
-3. stronger queue ownership / concurrency semantics if a real multi-consumer use case requires them,
+1. richer receipt/state handoff back to the conversational Frontdesk,
+2. stronger queue ownership / concurrency semantics if a real multi-consumer use case requires them,
+3. additional verifier transports driven by real inspection needs,
 4. additional worker adapters driven by real creator workflows rather than speculative integrations.
 
 The architectural rule stays the same: the assistant decides, the hand executes, reality is checked, and the result returns to the same assistant.
