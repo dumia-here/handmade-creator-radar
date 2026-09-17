@@ -1,5 +1,12 @@
 """Creator Hands Bridge: a tiny auditable action loop for conversational assistants."""
 
+from .codex_worker import (
+    CodexCliWorker,
+    CodexRunResult,
+    ExpectedArtifactsVerifier,
+    extract_last_agent_message,
+    subprocess_codex_runner,
+)
 from .drive_queue import (
     DriveApiError,
     DriveClaim,
@@ -28,4 +35,9 @@ __all__ = [
     "CreatorHandsBridge",
     "LocalTextWorker",
     "ReadbackVerifier",
+    "CodexCliWorker",
+    "CodexRunResult",
+    "ExpectedArtifactsVerifier",
+    "extract_last_agent_message",
+    "subprocess_codex_runner",
 ]
