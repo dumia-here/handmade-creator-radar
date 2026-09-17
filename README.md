@@ -22,14 +22,16 @@ The queue seam has two implementations. `FileQueue` proves the loop locally. `Dr
 
 The worker seam includes `CodexCliWorker`. It runs explicit `codex exec` work inside the caller-owned workspace while runtime authority stays outside the task card: executable, argv, model, reasoning, sandbox, environment, and timeout cannot be overridden by the dispatched payload. Expected artifacts must exist after Codex exits, then `ExpectedArtifactsVerifier` independently re-reads and hashes them. A maintainer-local live smoke using existing ChatGPT-managed Codex authentication successfully created and verified a requested artifact.
 
-The verifier seam now also includes `ReadOnlyMcpVerifier`. It launches a caller-owned MCP server over stdio JSON-RPC and only calls `stat_path`, `sha256_file`, and `read_text_file`. A maintainer-local live smoke completed the real MCP handshake and tool calls, re-read a workspace artifact, matched its SHA-256 digest, and observed a clean child exit.
+The verifier seam also includes `ReadOnlyMcpVerifier`. It launches a caller-owned MCP server over stdio JSON-RPC and only calls `stat_path`, `sha256_file`, and `read_text_file`. A maintainer-local live smoke completed the real MCP handshake and tool calls, re-read a workspace artifact, matched its SHA-256 digest, and observed a clean child exit.
 
-This remains a bounded public extraction, not a copy of the private production bridge. Live Drive OAuth smoke, distributed claim locking, production-grade containment, and complete execution provenance are not claimed here. The next useful extraction is richer receipt/state handoff back to the conversational Frontdesk.
+Terminal receipts now include a versioned `frontdesk_handoff`. It returns task identity, the agreed request and acceptance criteria, terminal outcome, artifacts, and verifier evidence to the conversational layer, plus bounded flags for whether completion may be claimed or Frontdesk review is still required. Arbitrary `task.payload` data is deliberately excluded from this handoff.
+
+This remains a bounded public extraction, not a copy of the private production bridge. Live Drive OAuth smoke, distributed claim locking, production-grade containment, and complete execution provenance are not claimed here.
 
 See [`docs/CREATOR-HANDS.md`](docs/CREATOR-HANDS.md). The focused tests run with:
 
 ```bash
-PYTHONPATH=src python3 -m unittest tests.test_creator_hands tests.test_creator_hands_drive tests.test_creator_hands_codex tests.test_creator_hands_mcp
+PYTHONPATH=src python3 -m unittest tests.test_creator_hands tests.test_creator_hands_drive tests.test_creator_hands_codex tests.test_creator_hands_mcp tests.test_creator_hands_handoff
 ```
 
 ## What this submission proves
